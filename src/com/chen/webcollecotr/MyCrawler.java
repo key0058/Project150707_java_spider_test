@@ -14,34 +14,27 @@ public class MyCrawler extends BreadthCrawler {
 	public MyCrawler(String crawlPath, boolean autoParse) {
 		super(crawlPath, autoParse);
 
-		this.addSeed("http://news.yahoo.com/");
-        this.addRegex("http://news.yahoo.com/.*");
-        this.addRegex("-http://news.yahoo.com/.+/.*");
+		this.addSeed("http://www.iqiyi.com/dianying/");
+        this.addRegex("http://www.iqiyi.com/dianying/.*");
+        this.addRegex("-http://www.iqiyi.com/dianying/.+/.*");
 //        this.addRegex("-.*\\.(jpg|png|gif).*");
-        this.addRegex("-.*#.*");
+//        this.addRegex("-.*#.*");
 	}
 
 	@Override
 	public void visit(Page page, Links nextLinks) {
         String url = page.getUrl();
-        /*if page is news page*/
-        if (Pattern.matches("http://news.yahoo.com/.+html", url)) {
-            /*we use jsoup to parse page*/
+
+        if (Pattern.matches("http://www.iqiyi.com/dianying/.+vfrm*", url)) {
             Document doc = page.getDoc();
 
-            /*extract title and content of news by css selector*/
-            String title = doc.select("h1[class=headline]").first().text();
-            String content = doc.select("div[class=body yom-art-content clearfix]").first().text();
+            String title = doc.select("a[site-piclist_pic_link]").first().text();
+//            String content = doc.select("div[class=body yom-art-content clearfix]").first().text();
 
-//            System.out.println("Page:\n" + doc.getAllElements().html());
             System.out.println("URL:\n" + url);
             System.out.println("title:\n" + title);
-            System.out.println("content:\n" + content);
+//            System.out.println("content:\n" + content);
 
-            /*If you want to add urls to crawl,add them to nextLink*/
-            /*WebCollector automatically filters links that have been fetched before*/
-            /*If autoParse is true and the link you add to nextLinks does not match the regex rules,the link will also been filtered.*/
-            // nextLinks.add("http://xxxxxx.com");
         }
     }
 
@@ -49,9 +42,7 @@ public class MyCrawler extends BreadthCrawler {
         MyCrawler crawler = new MyCrawler("crawl", true);
         crawler.setThreads(50);
         crawler.setTopN(100);
-        //crawler.setResumable(true);
-            /*start crawl with depth of 4*/
-        crawler.start(2);
+        crawler.start(3);
     }
 	
 	
